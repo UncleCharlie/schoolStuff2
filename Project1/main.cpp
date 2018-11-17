@@ -47,7 +47,7 @@ void kuszobol(const Mat& src, Mat dest, float ratio) {
 
 
 int main() {
-	Mat img = imread("scanned3.png", IMREAD_GRAYSCALE);
+	Mat img = imread("etalon.png", IMREAD_GRAYSCALE);
 	cv::Mat dest = cv::Mat::zeros(img.rows, img.cols, CV_8UC1);
 
 	int ratio = 1;
