@@ -1,4 +1,4 @@
-﻿/*#include <iostream>
+﻿#include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -10,19 +10,19 @@ using namespace std;
 void calcHisto_local(Mat img, Mat& histo) {
 	vector<Mat> kepek;
 	kepek.push_back(img); // egy képet használunk
-	
+
 	vector<int> csatornak;
 	csatornak.push_back(0); //a képnek a 0. csatornáját használjuk
-	
+
 	vector<int> hiszto_meretek;
 	hiszto_meretek.push_back(256); //szürkeárnyalatok száma
-	
+
 	vector<float> hiszto_tartomanyok;
 	hiszto_tartomanyok.push_back(0.0f); //hol kezdődik a tartomány
 	hiszto_tartomanyok.push_back(255.f); //meddig tart
-	
+
 	//accumlate: marad false (nullázza a hisztogrammot)
-	
+
 	calcHist(kepek, csatornak, noArray(), histo, hiszto_meretek,
 		hiszto_tartomanyok, false);
 }
@@ -54,18 +54,17 @@ int main() {
 	string menu = "tool";
 	createTrackbar("ratio", menu, &ratio, 0.1);
 
-	while(1) {
+	while (1) {
 		kuszobol(img, dest, ratio);
 		imshow("teszt", dest);
 		cv::waitKey();
 	}
 
 
-	
+
 
 	cv::waitKey();
 
 
 	return 0;
 }
-*/
