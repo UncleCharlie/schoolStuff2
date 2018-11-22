@@ -5,6 +5,9 @@
 
 using namespace cv;
 using namespace std;
+RNG rng(12345);
+
+
 
 void calcHisto_local(Mat img, Mat& histo) {
 	vector<Mat> kepek;
@@ -50,8 +53,8 @@ void convert(const Mat src, Mat& dest) {
 	cvtColor(srcf, dest, COLOR_BGR2Lab);
 }
 
-
 int main() {
+	
 	double E = 0;
 	Mat etalon = imread("etalon.png", ImreadModes::IMREAD_COLOR);
 	Mat img = imread("etalon.png", IMREAD_GRAYSCALE);
@@ -60,13 +63,27 @@ int main() {
 	double ratio = 1;
 	//Forma észlelése összehasonlitáshoz:
 	kuszobol(img, blob, ratio);
-	imshow("teszt", blob);
-	
-
 
 	Mat etalonlab;
 	convert(etalon, etalonlab);
+	//Konturkereses:
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
 	
+	findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
+	for (int i = 0; i < contours.size(); i++)
+	{
+		//vonal szinenek megadasa
+		Scalar color = Scalar(rng.uniform(4, 255), rng.uniform(4, 255), rng.uniform(4, 55));
+		//kontur kirajzolasa az etalon kepre
+		//kepnev,konturok,konturindex,szin,vastagsag, vonaltipus
+		drawContours(etalon, contours, i, color, 2, 8, hierarchy, 0, Point());
+	}
+	// /Konturkereses
+	imshow("teszt", etalon);
+
+	
+
 	for (int i = 1; i <= 3; ++i) {
 		String path = "suti" + std::to_string(i) + ".png";
 		cout << path << "\n";
