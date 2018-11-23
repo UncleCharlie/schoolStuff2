@@ -13,8 +13,8 @@ int main() {
 	//Kepek beolvasasa:
 	//+ETALONLAB+ az etalonlabot tartalmazó kép készitése
 	//+BLOB+ blobot tartalmazó kép létrehozása
-	Mat etalon = imread("etalon.png", ImreadModes::IMREAD_COLOR);
-	Mat img = imread("etalon.png", IMREAD_GRAYSCALE);
+	Mat etalon = imread("etalon1.png", ImreadModes::IMREAD_COLOR);
+	Mat img = imread("etalon1.png", IMREAD_GRAYSCALE);
 	Mat etalonlab;
 	convert(etalon, etalonlab);
 
