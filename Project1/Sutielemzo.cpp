@@ -10,34 +10,58 @@ RNG rng(12345);
 
 int main() {
 
-	double E = 0;
+	//Kepek beolvasasa:
+	//+ETALONLAB+ az etalonlabot tartalmazó kép készitése
+	//+BLOB+ blobot tartalmazó kép létrehozása
 	Mat etalon = imread("etalon.png", ImreadModes::IMREAD_COLOR);
 	Mat img = imread("etalon.png", IMREAD_GRAYSCALE);
-	Mat blob = cv::Mat::zeros(img.rows, img.cols, CV_8UC1);
-	//küszöbérték:
-	double ratio = 1;
-	//Forma észlelése összehasonlitáshoz:
-	kuszobol(img, blob, ratio);
-
 	Mat etalonlab;
 	convert(etalon, etalonlab);
-	//Konturkereses:
+
+	Mat blob = cv::Mat::zeros(img.rows, img.cols, CV_8UC1);
+	kuszobol(img, blob, 1);
+
+	Mat kernel = cv::getStructuringElement(MORPH_CROSS, Size(6, 6));
+	dilate(blob, blob, kernel);
+
+
+	//+KONTÚR+ Konturkereses:
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
+	findContours(blob, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
+	Scalar color = Scalar(rng.uniform(0, 0), rng.uniform(0, 255), rng.uniform(0, 0));
 
-	findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
-	for (int i = 0; i < contours.size(); i++)
+	//összes kontúr kirajzolása:
+	for (int i = 0; i < 5; i++)
 	{
-		//vonal szinenek megadasa
-		Scalar color = Scalar(rng.uniform(4, 255), rng.uniform(4, 255), rng.uniform(4, 55));
 		//kontur kirajzolasa az etalon kepre
-		//kepnev,konturok,konturindex,szin,vastagsag, vonaltipus
+		//kepnev,konturok,konturindex,szin,vastagsag, vonaltipus, a contours tömb 4-edik sorában van a süti kontúrja
 		drawContours(etalon, contours, i, color, 2, 8, hierarchy, 0, Point());
 	}
 	// /Konturkereses
 	imshow("teszt", etalon);
 
 
+	cv::waitKey();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*	//+PONTONKÉNTI VIZSGÁLAT+
+	double E = 0;
 	for (int i = 1; i <= 3; ++i) {
 		String path = "suti" + std::to_string(i) + ".png";
 		cout << path << "\n";
@@ -60,9 +84,10 @@ int main() {
 
 			}
 		}
-		printf("suti%d: %d \n", i, E);
 		E = 0;
 	}
 
-	cv::waitKey();
+	
 }
+
+*/
