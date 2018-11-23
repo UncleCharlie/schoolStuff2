@@ -2,56 +2,14 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
+#include "header.h"
 
 using namespace cv;
 using namespace std;
-
-void calcHisto_local(Mat img, Mat& histo) {
-	vector<Mat> kepek;
-	kepek.push_back(img); // egy képet használunk
-
-	vector<int> csatornak;
-	csatornak.push_back(0); //a képnek a 0. csatornáját használjuk
-
-	vector<int> hiszto_meretek;
-	hiszto_meretek.push_back(256); //szürkeárnyalatok száma
-
-	vector<float> hiszto_tartomanyok;
-	hiszto_tartomanyok.push_back(0.0f); //hol kezdődik a tartomány
-	hiszto_tartomanyok.push_back(255.f); //meddig tart
-
-	//accumlate: marad false (nullázza a hisztogrammot)
-
-	calcHist(kepek, csatornak, noArray(), histo, hiszto_meretek,
-		hiszto_tartomanyok, false);
-}
-void kuszobol(const Mat& src, Mat dest, float ratio) {
-	ratio *= 0.1;
-	Mat img = src.clone();
-	int eloter = ratio * img.cols * img.rows;
-	double osszeg = 0.0;
-	Mat histo;
-	calcHisto_local(img, histo);
-
-	for (int i = 0; i < histo.rows; i++)
-	{
-		osszeg += histo.at<float>(i);
-		if (osszeg > eloter) {
-			threshold(img, dest, i, 255, THRESH_BINARY);
-			break;
-		}
-
-	}
-}
-
-void convert(const Mat src, Mat& dest) {
-	Mat srcf, lab;
-	src.convertTo(srcf, CV_32FC3, 1 / 255.0);
-	cvtColor(srcf, dest, COLOR_BGR2Lab);
-}
-
+RNG rng(12345);
 
 int main() {
+
 	double E = 0;
 	Mat etalon = imread("etalon.png", ImreadModes::IMREAD_COLOR);
 	Mat img = imread("etalon.png", IMREAD_GRAYSCALE);
@@ -60,13 +18,26 @@ int main() {
 	double ratio = 1;
 	//Forma észlelése összehasonlitáshoz:
 	kuszobol(img, blob, ratio);
-	imshow("teszt", blob);
-	
-
 
 	Mat etalonlab;
 	convert(etalon, etalonlab);
-	
+	//Konturkereses:
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+
+	findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
+	for (int i = 0; i < contours.size(); i++)
+	{
+		//vonal szinenek megadasa
+		Scalar color = Scalar(rng.uniform(4, 255), rng.uniform(4, 255), rng.uniform(4, 55));
+		//kontur kirajzolasa az etalon kepre
+		//kepnev,konturok,konturindex,szin,vastagsag, vonaltipus
+		drawContours(etalon, contours, i, color, 2, 8, hierarchy, 0, Point());
+	}
+	// /Konturkereses
+	imshow("teszt", etalon);
+
+
 	for (int i = 1; i <= 3; ++i) {
 		String path = "suti" + std::to_string(i) + ".png";
 		cout << path << "\n";
@@ -92,7 +63,6 @@ int main() {
 		printf("suti%d: %d \n", i, E);
 		E = 0;
 	}
-	
+
 	cv::waitKey();
 }
-

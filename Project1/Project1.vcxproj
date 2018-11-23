@@ -123,8 +123,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="calchisto.cpp" />
+    <ClCompile Include="convert.cpp" />
+    <ClCompile Include="kuszobol.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sutielemzo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
