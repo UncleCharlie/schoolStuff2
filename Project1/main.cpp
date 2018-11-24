@@ -1,72 +1,79 @@
-﻿/*
-#include <iostream>
+﻿/*#include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vector>
+#include "header.h"
 
 using namespace cv;
 using namespace std;
 ////This test this test this
-void calcHisto_local(Mat img, Mat& histo) {
-	vector<Mat> kepek;
-	kepek.push_back(img); // egy képet használunk
-	
-	vector<int> csatornak;
-	csatornak.push_back(0); //a képnek a 0. csatornáját használjuk
-	
-	vector<int> hiszto_meretek;
-	hiszto_meretek.push_back(256); //szürkeárnyalatok száma
-	
-	vector<float> hiszto_tartomanyok;
-	hiszto_tartomanyok.push_back(0.0f); //hol kezdődik a tartomány
-	hiszto_tartomanyok.push_back(255.f); //meddig tart
-	
-	//accumlate: marad false (nullázza a hisztogrammot)
-	
-	calcHist(kepek, csatornak, noArray(), histo, hiszto_meretek,
-		hiszto_tartomanyok, false);
-}
-void kuszobol(const Mat& src, Mat dest, float ratio) {
-	ratio *= 0.1;
-	Mat img = src.clone();
-	int eloter = ratio * img.cols * img.rows;
-	double osszeg = 0.0;
-	Mat histo;
-	calcHisto_local(img, histo);
-
-	for (int i = 0; i < histo.rows; i++)
-	{
-		osszeg += histo.at<float>(i);
-		if (osszeg > eloter) {
-			threshold(img, dest, i, 255, THRESH_BINARY);
-			break;
-		}
-
-	}
-}
-
 
 int main() {
-	Mat img = imread("etalon.png", IMREAD_GRAYSCALE);
+	Mat img = imread("etalon.jpg", IMREAD_GRAYSCALE);
 	cv::Mat dest = cv::Mat::zeros(img.rows, img.cols, CV_8UC1);
 
 	int ratio = 1;
 	string menu = "tool";
-	createTrackbar("ratio", menu, &ratio, 0.1);
+	createTrackbar("ratio", "teszt", &ratio, 0.1);
+	
 
 	while(1) {
+		
 		kuszobol(img, dest, ratio);
 		imshow("teszt", dest);
 		cv::waitKey();
 	}
 
 
-	
-
 	cv::waitKey();
-
 
 	return 0;
 }
 */
+
+
+
+//konvex burok
+//vector<Point> hull;
+
+//convexHull(contours[4], hull, false, true);
+//polylines(etalon, hull, true,color,4);
+
+////volgypontok
+//vector<int> hull2;
+//convexHull(contours[4], hull2, false, false);
+
+//vector<Vec4i> defects;
+//convexityDefects(contours[4], hull2,defects);
+
+
+
+
+
+//drawMarker(etalon, defects[2],color, MARKER_CROSS);
+
+//összes kontúr kirajzolása:
+//GaussianBlur(blob, blob, Size(15, 15), 2, 2);
+//GaussianBlur(blob, blob, Size(15, 15), 2, 2);
+//Mat kernel = cv::getStructuringElement(MORPH_RECT, Size(5, 5));
+//morphologyEx(blob, blob, MORPH_CLOSE, kernel);
+//	dilate(blob, blob, kernel);
+
+
+
+
+
+//	drawContours(img, contours, 1, Scalar(94, 206, 165), 2, 8, hierarchy, 0, Point());
+	//for (int i = 0; i < contours.size(); i++)
+	//{
+	//	//kontur kirajzolasa az etalon kepre
+	//	//kepnev,konturok,konturindex,szin,vastagsag, vonaltipus, a contours tömb 4-edik sorában van a süti kontúrja
+
+	//	drawContours(etalon, contours, 0, Scalar(94, 206, 165), 2, 8, hierarchy, 0, Point());
+	//	//drawContours(img, contours, i, Scalar(94, 206, 165), 2, 8, hierarchy, 0, Point());
+	//	printf("%d\n", i);
+	//}
+	// /Konturkereses
+
+	//imshow("teszt", etalon);

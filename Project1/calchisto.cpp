@@ -11,8 +11,8 @@ void calcHisto_local(Mat img, Mat& histo) {
 	hiszto_meretek.push_back(256); //szürkeárnyalatok száma
 
 	vector<float> hiszto_tartomanyok;
-	hiszto_tartomanyok.push_back(0.0f); //hol kezdõdik a tartomány
-	hiszto_tartomanyok.push_back(255.f); //meddig tart
+	hiszto_tartomanyok.push_back(0.f); //hol kezdõdik a tartomány
+	hiszto_tartomanyok.push_back(225.f); //meddig tart
 
 										 //accumlate: marad false (nullázza a hisztogrammot)
 

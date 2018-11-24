@@ -125,9 +125,14 @@
   <ItemGroup>
     <ClCompile Include="calchisto.cpp" />
     <ClCompile Include="convert.cpp" />
+    <ClCompile Include="cookieSizeTest.cpp" />
+    <ClCompile Include="chocolateSpots.cpp" />
+    <ClCompile Include="drawArea.cpp" />
+    <ClCompile Include="getCookieArea.cpp" />
     <ClCompile Include="kuszobol.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sutielemzo.cpp" />
+    <ClCompile Include="turnToBlob.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />

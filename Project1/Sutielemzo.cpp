@@ -2,92 +2,73 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
+#include <sstream>
 #include "header.h"
 
 using namespace cv;
 using namespace std;
-RNG rng(12345);
 
 int main() {
 
 	//Kepek beolvasasa:
-	//+ETALONLAB+ az etalonlabot tartalmazó kép készitése
-	//+BLOB+ blobot tartalmazó kép létrehozása
-	Mat etalon = imread("etalon1.png", ImreadModes::IMREAD_COLOR);
-	Mat img = imread("etalon1.png", IMREAD_GRAYSCALE);
-	Mat etalonlab;
-	convert(etalon, etalonlab);
+	Mat etalonColor = imread("etalon.jpg", ImreadModes::IMREAD_COLOR);
+	Mat etalon = imread("etalon.jpg", IMREAD_GRAYSCALE);
+	int numOfRows = etalon.rows;
+	int numOfCols = etalon.cols;
 
-	Mat blob = cv::Mat::zeros(img.rows, img.cols, CV_8UC1);
-	kuszobol(img, blob, 1);
+	//blobot tartalmazó kép létrehozása:
+	Mat blob = cv::Mat::zeros(numOfRows, numOfCols, CV_8UC1);
+	//a kep homogen "blob"-bá redukálása, (az alapertelmezett kuszobertek a kuszobol fuggvenyhez= 5):
+	turnToBlob(etalon, blob);
 
-	Mat kernel = cv::getStructuringElement(MORPH_CROSS, Size(6, 6));
-	dilate(blob, blob, kernel);
+	//az etalon süti területének megkeresése:
+	double etalonTerulet = getCookieArea(blob);
+	cout << "etalon terulet: " << etalonTerulet << "\n";
+	//a területre vonatkozó tolerancia értéket +-3000-ben határoztam meg:
+	double toleranciaTeruletAlso = etalonTerulet - 3500;
+	double toleranciaTeruletFelso = etalonTerulet + 3500;
+	//az etalon süti csokidarabjai számának megkeresése:
+	int etalonCsokiDarabok = chocolateSpots(etalonColor);
+	cout << "etalon csokidarabok szama: " << etalonCsokiDarabok << "\n";
+	//a csokoládédarabok számára vonatkozó alsó tolerancia értéket etalon-3-ban határoztam meg, felsőt nem határoztam meg:
+	int toleranciaCsokiAlso = etalonCsokiDarabok - 1;
 
+	int counter = 1;
+	int tesztsutiCsokiDarabok;
+	double tesztSutiTerulet;
 
-	//+KONTÚR+ Konturkereses:
-	vector<vector<Point>> contours;
-	vector<Vec4i> hierarchy;
-	findContours(blob, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
-	Scalar color = Scalar(rng.uniform(0, 0), rng.uniform(0, 255), rng.uniform(0, 0));
+	while (1) {
+	//képek beolvasása:
+		stringstream name;
+		name << "tesztsuti" << counter << ".jpg";
+		string filename = name.str();
+		
+		Mat tesztsuti = imread(filename, IMREAD_GRAYSCALE);
+		Mat tesztsutiColor = imread(filename, ImreadModes::IMREAD_COLOR);
 
-	//összes kontúr kirajzolása:
-	for (int i = 0; i < 5; i++)
-	{
-		//kontur kirajzolasa az etalon kepre
-		//kepnev,konturok,konturindex,szin,vastagsag, vonaltipus, a contours tömb 4-edik sorában van a süti kontúrja
-		drawContours(etalon, contours, i, color, 2, 8, hierarchy, 0, Point());
+		if (tesztsuti.empty())
+			break;
+	//suti vizsgálata:
+
+		turnToBlob(tesztsuti, tesztsuti);
+
+		tesztsutiCsokiDarabok = chocolateSpots(tesztsutiColor, toleranciaCsokiAlso);
+		tesztSutiTerulet = getCookieArea(tesztsuti);
+
+		drawArea(tesztsuti, tesztsutiColor, toleranciaTeruletAlso, toleranciaTeruletFelso);
+
+		imshow("teszt", tesztsutiColor);
+
+		if (cookieSizeTest(tesztsuti, toleranciaTeruletAlso, toleranciaTeruletFelso) && (tesztsutiCsokiDarabok > toleranciaCsokiAlso))
+			cout << filename << ": A vizsgalt suti terulete " << tesztSutiTerulet << "\nA csokidarabok szama: " << tesztsutiCsokiDarabok << "\nA suti atment a minosegvizsgalaton\n";
+		else
+			cout << filename << ": A vizsgalt suti terulete " << tesztSutiTerulet << "\nA csokidarabok szama: " << tesztsutiCsokiDarabok << "\nA suti megbukott a minosegvizsgalaton\n";
+
+		counter++;
+		cv::waitKey();
 	}
-	// /Konturkereses
-	imshow("teszt", etalon);
-
+	
 
 	cv::waitKey();
 
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*	//+PONTONKÉNTI VIZSGÁLAT+
-	double E = 0;
-	for (int i = 1; i <= 3; ++i) {
-		String path = "suti" + std::to_string(i) + ".png";
-		cout << path << "\n";
-		Mat img = imread(path);
-		Mat lab;
-		convert(img, lab);
-
-		for (int j = 0; j < etalon.rows; ++j) {
-			for (int k = 0; k < etalon.cols; ++k) {
-				Vec3f c = etalonlab.at<Vec3f>(j, k);
-				Vec3f f = lab.at<Vec3f>(j, k);
-
-
-				double L = c[0] - f[0];
-				double A = c[1] - f[1];
-				double B = c[2] - f[2];
-
-
-				E += sqrt(L * L + A * A + B * B);
-
-			}
-		}
-		E = 0;
-	}
-
-	
-}
-
-*/
