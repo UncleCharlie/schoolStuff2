@@ -130,7 +130,6 @@
     <ClCompile Include="drawArea.cpp" />
     <ClCompile Include="getCookieArea.cpp" />
     <ClCompile Include="kuszobol.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Sutielemzo.cpp" />
     <ClCompile Include="turnToBlob.cpp" />
   </ItemGroup>
