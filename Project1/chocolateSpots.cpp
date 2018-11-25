@@ -58,7 +58,7 @@ int chocolateSpots(const Mat& src, int toleranciaCsokiAlso) {
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
 
-	findContours(tesztSuti, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE);
+	findContours(tesztSuti, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
 
 	imshow("teszt1",tesztSuti);
 	
