@@ -52,20 +52,28 @@ int chocolateSpots(const Mat& src, int toleranciaCsokiAlso) {
 
 	//feketefeher kepet keszitunk:
 	cvtColor(tesztSuti, tesztSuti, CV_BGR2GRAY);
-	threshold(tesztSuti, tesztSuti, 250, 290, THRESH_BINARY);
+	threshold(tesztSuti, tesztSuti, 250, 290, THRESH_BINARY_INV);
 	
 	//detektalt csokidarabok kirajzolasa:
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
+
 	findContours(tesztSuti, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE);
+
+	imshow("teszt1",tesztSuti);
 	
 	for (int i = 0; i < contours.size(); i++)
 	{
+		
+		//if (hierarchy1[i][3] >-1 ){
 		if(contours.size() < toleranciaCsokiAlso)
 			drawContours(src, contours, i, Scalar(0, 0, 255), 2, 8, hierarchy, 0, Point());
 		else
 			drawContours(src, contours, i, Scalar(94, 206, 165), 2, 8, hierarchy, 0, Point());
+		//}
+		cv::waitKey();
+		cout << "hierarchy" << hierarchy[i] << "\n";
+		imshow("teszt2", src);
 	}
-	
 	return  contours.size();
 }
